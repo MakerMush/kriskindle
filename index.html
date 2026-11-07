@@ -145,6 +145,9 @@ fieldset.cols legend{font-size:13px; font-weight:700; color:var(--muted); letter
 .facts:empty{display:none}
 .facts dt{font-size:13px; color:var(--muted); line-height:1.3}
 .facts dd{margin:2px 0 0; font-size:17px; font-weight:700; white-space:pre-line; overflow-wrap:anywhere}
+.facts .mail-fact{border:2px dashed var(--holly); border-radius:10px; padding:12px 14px}
+.facts .mail-fact dt{font-size:15px; font-weight:700; color:var(--holly)}
+.facts .mail-fact dd{margin-top:6px}
 .tag-note{font-size:14px; color:var(--muted)}
 .pop{animation:pop .5s cubic-bezier(.2,.9,.3,1.3) both}
 @keyframes pop{from{transform:scale(.6); opacity:0} to{transform:none; opacity:1}}
@@ -281,7 +284,7 @@ fieldset.cols legend{font-size:13px; font-weight:700; color:var(--muted); letter
           <button class="btn primary" id="rvBtn" type="button">Reveal my person</button>
         </div>
         <div id="rvOut" hidden style="display:grid; gap:12px">
-          <p class="tag-label">You're shopping for</p>
+          <p class="tag-label">Your Kris Kindle this year is</p>
           <p class="tag-name pop" id="rvR"></p>
           <dl class="facts" id="rvFacts"></dl>
           <p class="tag-note">Keep it secret. You can open this link again any time.</p>
@@ -457,12 +460,15 @@ fieldset.cols legend{font-size:13px; font-weight:700; color:var(--muted); letter
     S.namesText = cur.concat(add).join('\n');
     return add.length;
   }
+  const addrIdx = f => f.headers.findIndex((h,i) => i !== f.emailCol && /where should|mail stuff|mailing|ship/i.test(h));
+  const NOADDR = /^(n\/?a|na|none|nope|no|yes|-+|same|in person|i'?ll be there|will be there|i'?ll be in (pk|town)|here)\.?!?$/i;
   function infoFor(name){
     if(!S.form) return [];
     const f = S.form, row = latestRows().get(name.toLowerCase()); if(!row) return [];
-    const hide = hiddenCols(f);
+    const hide = hiddenCols(f), addr = addrIdx(f);
     return f.headers.map((h,i) => [h || ('Question ' + (i+1)), String(row[i] || '').trim(), i])
-      .filter(x => !hide.includes(x[2]) && f.show[x[2]] && x[1]).map(x => [x[0], x[1]]);
+      .filter(x => !hide.includes(x[2]) && f.show[x[2]] && x[1] && !(x[2] === addr && NOADDR.test(x[1])))
+      .map(x => x[2] === addr ? [name + ' won\'t be in town on Christmas Eve! Please make sure you mail their gift to:', x[1], 'mail'] : [x[0], x[1]]);
   }
   function contactFor(name){
     if(!S.form || S.form.emailCol < 0) return null;
@@ -476,7 +482,7 @@ fieldset.cols legend{font-size:13px; font-weight:700; color:var(--muted); letter
     if(digits.length > 11 && v.trim()[0] === '+') return {type:'phone', value: '+' + digits, show: v};
     return null;
   }
-  function factsHTML(list){ return (list || []).map(x => '<div><dt>' + esc(x[0]) + '</dt><dd>' + esc(x[1]) + '</dd></div>').join(''); }
+  function factsHTML(list){ return (list || []).map(x => '<div' + (x[2] === 'mail' ? ' class="mail-fact"' : '') + '><dt>' + esc(x[0]) + '</dt><dd>' + esc(x[1]) + '</dd></div>').join(''); }
 
   /* ---- requests from the form ---- */
   const NOPREF = /^(no|none|nope|n\/?a|-+|no preference|no pref|no one|nobody|anyone|anybody|whoever|surprise me|doesn'?t matter|idk)\.?!?$/i;
@@ -647,14 +653,14 @@ fieldset.cols legend{font-size:13px; font-weight:700; color:var(--muted); letter
     const sign = S.sign.trim();
     const subject = 'Your ' + eventName() + ' match';
     const body = 'Hi ' + first(g) + ',\n\n' +
-      'The ' + eventName() + ' draw is done! Open your private link to see who you\'re shopping for, plus their wishlist and where to mail your gift if they won\'t be in PK:\n\n' +
+      'The ' + eventName() + ' draw is done! Open your private link to see who your Kris Kindle is this year, plus their wishlist and where to mail your gift if they won\'t be in town:\n\n' +
       link + '\n\n' +
       'Keep it secret, and please don\'t forward this one.' + (sign ? '\n\n' + sign : '');
     return {subject, body};
   }
   function textBody(g, link){
     const sign = S.sign.trim();
-    return 'Hi ' + first(g) + '! The ' + eventName() + ' draw is done. Here\'s your private link to see who you\'re shopping for, their wishlist, and where to mail your gift. Keep it secret!\n\n' + link + (sign ? '\n\n- ' + sign : '');
+    return 'Hi ' + first(g) + '! The ' + eventName() + ' draw is done. Here\'s your private link to see who your Kris Kindle is this year, plus their wishlist. Keep it secret!\n\n' + link + (sign ? '\n\n- ' + sign : '');
   }
   function contactHref(g, c, link){
     if(c.type === 'email'){
@@ -897,7 +903,7 @@ fieldset.cols legend{font-size:13px; font-weight:700; color:var(--muted); letter
   $('#ipBack').addEventListener('click', () => ipShow('#ipList'));
   $('#ipShow').addEventListener('click', () => {
     const d = currentDraw(), pair = d && d.p.find(p => p[0] === ipCurrent); if(!pair) return;
-    $('#ipFor').textContent = ipCurrent + ', you\'re shopping for';
+    $('#ipFor').textContent = ipCurrent + ', your Kris Kindle this year is';
     const r = $('#ipR'); r.textContent = pair[1]; r.classList.remove('pop'); void r.offsetWidth; r.classList.add('pop');
     $('#ipFacts').innerHTML = factsHTML(infoFor(pair[1]));
     ipShow('#ipOut'); $('#ipHide').focus();
