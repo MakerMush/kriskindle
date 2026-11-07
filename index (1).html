@@ -1,0 +1,940 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Haight Family Kris Kindle</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Grenze+Gotisch:wght@500;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: one narrow column of five setup steps (a real sequence), results card below; the reveal view is a single gift tag on a string */
+:root{
+  --bg:#eef3f0; --surface:#ffffff; --sunk:#e4ece8; --ink:#15302a; --muted:#56706a; --line:#cfdcd6;
+  --holly:#b3202e; --holly-ink:#ffffff; --pine:#1d5c47; --gold:#9a6f17;
+  --warn-bg:#fbefd6; --warn-ink:#6b4a08; --err-bg:#f8e1e3; --err-ink:#8a1622; --ok-bg:#dcefe5; --ok-ink:#1d5c47;
+  --display:"Grenze Gotisch", "UnifrakturMaguntia", Georgia, serif;
+  --body:"Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0e1b17; --surface:#15261f; --sunk:#1b3029; --ink:#e6efea; --muted:#9ab3aa; --line:#2b443b;
+    --holly:#e0525c; --holly-ink:#1a0306; --pine:#74c4a0; --gold:#dcb35c;
+    --warn-bg:#3a2e12; --warn-ink:#f2d58f; --err-bg:#3d1519; --err-ink:#f6b3b9; --ok-bg:#173a2c; --ok-ink:#a5e0c4;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0e1b17; --surface:#15261f; --sunk:#1b3029; --ink:#e6efea; --muted:#9ab3aa; --line:#2b443b;
+  --holly:#e0525c; --holly-ink:#1a0306; --pine:#74c4a0; --gold:#dcb35c;
+  --warn-bg:#3a2e12; --warn-ink:#f2d58f; --err-bg:#3d1519; --err-ink:#f6b3b9; --ok-bg:#173a2c; --ok-ink:#a5e0c4;
+  color-scheme:dark;
+}
+[hidden]{display:none!important}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:var(--bg); color:var(--ink); font-family:var(--body); font-size:16px; line-height:1.5;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px));
+  padding-block:28px 64px;
+}
+.wrap{max-width:680px; margin:0 auto; display:grid; gap:18px}
+h1,h2,h3,p{margin:0}
+h1,h2{text-wrap:balance}
+
+.hdr{display:grid; gap:8px; padding-block:8px 6px}
+.eyebrow{font-size:12px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--muted)}
+.hdr h1{font-family:var(--display); font-weight:700; font-size:clamp(52px, 12vw, 80px); line-height:.9; color:var(--holly)}
+.hdr h1 .top{display:block; font-size:.5em; line-height:1.1; color:var(--pine)}
+.hdr p{color:var(--muted); max-width:56ch}
+
+.banner{display:flex; flex-wrap:wrap; gap:10px 14px; align-items:center; justify-content:space-between; background:var(--warn-bg); color:var(--warn-ink); border-radius:10px; padding:12px 14px; font-size:15px}
+
+.step{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:20px; display:grid; gap:14px; min-width:0}
+.step-h{display:flex; gap:12px; align-items:baseline}
+.num{flex:none; width:28px; height:28px; border-radius:50%; display:grid; place-items:center; background:var(--sunk); color:var(--pine); font-weight:700; font-size:14px; transform:translateY(4px)}
+.step-h h2{font-size:20px; line-height:1.25}
+.step-h p{color:var(--muted); font-size:15px; margin-top:2px; max-width:58ch}
+.sub{display:grid; gap:10px; padding:14px; border-radius:10px; background:var(--sunk); min-width:0}
+.sub h3{font-size:16px}
+.sub ol{margin:0; padding-left:20px; font-size:15px; color:var(--muted); display:grid; gap:2px}
+.fields{display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:12px}
+@media (max-width:560px){ .fields{grid-template-columns:1fr} }
+label.f{display:grid; gap:4px; font-size:13px; font-weight:700; color:var(--muted); letter-spacing:.02em}
+input[type=text], input[type=url], textarea, select{
+  width:100%; font:inherit; font-size:16px; color:var(--ink); background:var(--bg);
+  border:1px solid var(--line); border-radius:8px; padding:9px 11px; min-width:0;
+}
+.sub textarea, .sub select{background:var(--surface)}
+textarea{min-height:180px; resize:vertical; line-height:1.6}
+#paste{min-height:110px; font-family:var(--mono); font-size:13px; white-space:pre; overflow-x:auto}
+:focus-visible{outline:2px solid var(--pine); outline-offset:2px}
+.count{font-size:14px; color:var(--muted); font-variant-numeric:tabular-nums}
+fieldset.cols{border:0; padding:0; margin:0; display:grid; gap:6px}
+fieldset.cols legend{font-size:13px; font-weight:700; color:var(--muted); letter-spacing:.02em; margin-bottom:6px; padding:0}
+.ck{display:flex; gap:10px; align-items:flex-start; font-size:15px; line-height:1.35; cursor:pointer}
+.ck input{width:18px; height:18px; margin:1px 0 0; flex:none; accent-color:var(--pine)}
+
+.pairs{display:grid; gap:10px}
+.pair{display:grid; grid-template-areas:"g a r x"; grid-template-columns:minmax(0,1fr) auto minmax(0,1fr) auto; gap:8px; align-items:center}
+.pair .s1{grid-area:g} .pair .mid{grid-area:a; font-size:14px; color:var(--muted); padding-inline:2px} .pair .s2{grid-area:r} .pair .rm{grid-area:x}
+@media (max-width:520px){
+  .pair{grid-template-areas:"g x" "r x"; grid-template-columns:minmax(0,1fr) auto; padding-bottom:10px; border-bottom:1px dashed var(--line)}
+  .pair .mid{display:none}
+}
+.lock{color:var(--gold)}
+.empty{font-size:15px; color:var(--muted)}
+.freq{display:flex; flex-wrap:wrap; gap:8px 12px; align-items:center; justify-content:space-between; padding:10px 0; border-top:1px solid var(--line)}
+.freq:first-child{border-top:0; padding-top:0}
+.freq-t{flex:1 1 240px; min-width:0; font-size:15px; display:grid; gap:2px}
+.freq-m{font-size:13px; color:var(--muted)}
+.freq-m.st-declined, .freq-m.st-nomatch, .freq-m.st-conflict{color:var(--err-ink)}
+.freq-m.st-unknown, .freq-m.st-contested{color:var(--warn-ink)}
+
+.btn{font:inherit; font-size:15px; font-weight:700; border-radius:999px; padding:9px 16px; border:1px solid var(--line); background:var(--surface); color:var(--ink); cursor:pointer; white-space:nowrap; text-decoration:none; display:inline-block; line-height:1.3}
+.btn:hover{border-color:var(--pine)}
+.btn.primary{background:var(--holly); color:var(--holly-ink); border-color:var(--holly); font-size:17px; padding:12px 24px}
+.btn.primary:hover{filter:brightness(1.07)}
+.btn.mail{background:var(--pine); color:var(--surface); border-color:var(--pine)}
+.btn.small{font-size:14px; padding:6px 12px}
+.btn.ghost{background:transparent}
+.btn:disabled, .btn[aria-disabled="true"]{opacity:.45; cursor:not-allowed; pointer-events:none}
+.rm{width:36px; height:36px; border-radius:50%; border:1px solid var(--line); background:transparent; color:var(--muted); font-size:20px; line-height:1; cursor:pointer}
+.rm:hover{color:var(--holly); border-color:var(--holly)}
+.row{display:flex; flex-wrap:wrap; gap:10px; align-items:center}
+
+.notes{display:grid; gap:8px}
+.notes:empty{display:none}
+.note{border-radius:8px; padding:9px 12px; font-size:15px}
+.note.err{background:var(--err-bg); color:var(--err-ink)}
+.note.warn{background:var(--warn-bg); color:var(--warn-ink)}
+.note.ok{background:var(--ok-bg); color:var(--ok-ink)}
+.hint{font-size:14px; color:var(--muted)}
+
+.results{border-color:var(--pine); border-width:2px}
+.summary{display:flex; flex-wrap:wrap; gap:8px}
+.chip{font-size:13px; font-weight:700; border-radius:999px; padding:4px 10px; background:var(--sunk); color:var(--ink); font-variant-numeric:tabular-nums; white-space:nowrap}
+.chip.ok{background:var(--ok-bg); color:var(--ok-ink)}
+.chip.lockc{color:var(--gold)}
+.list{display:grid; border-top:1px solid var(--line)}
+.li{display:flex; flex-wrap:wrap; gap:8px 12px; align-items:center; padding:12px 0; border-bottom:1px solid var(--line)}
+.li .who{flex:1 1 180px; min-width:0; font-weight:700; display:grid}
+.li .who small{font-weight:400; font-size:13px; color:var(--muted); overflow-wrap:anywhere}
+.li .state{font-size:13px; color:var(--muted)}
+.li .state.sent{color:var(--ok-ink); font-weight:700}
+.li input{flex:1 1 100%; font-family:var(--mono); font-size:12px}
+.confirm{display:flex; flex-wrap:wrap; gap:10px; align-items:center; font-size:15px; color:var(--err-ink); background:var(--err-bg); border-radius:8px; padding:10px 12px}
+
+/* gift tag */
+.tagwrap{display:grid; justify-items:center; padding-top:10px; gap:18px}
+.string{width:120px; height:70px; display:block; color:var(--gold); margin-bottom:-32px}
+.tag{
+  position:relative; width:min(420px, 100%); background:var(--surface); color:var(--ink);
+  clip-path:polygon(20% 0, 80% 0, 100% 46px, 100% 100%, 0 100%, 0 46px);
+  padding:64px 28px 32px; display:grid; gap:14px; text-align:center; transform:rotate(-1.5deg);
+  filter:drop-shadow(0 10px 18px rgba(0,0,0,.12));
+}
+.tag .hole{position:absolute; top:22px; left:50%; width:18px; height:18px; margin-left:-9px; border-radius:50%; background:var(--bg); box-shadow:inset 0 0 0 2px var(--gold)}
+.tag .stitch{position:absolute; inset:10px; border:2px dashed var(--holly); opacity:.55; pointer-events:none; clip-path:polygon(20% 0, 80% 0, 100% 40px, 100% 100%, 0 100%, 0 40px)}
+.tag-event{font-size:12px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--muted)}
+.tag-to{font-size:20px}
+.tag-label{font-size:15px; color:var(--muted)}
+.tag-name{font-family:var(--display); font-weight:700; font-size:clamp(44px, 13vw, 64px); line-height:1; color:var(--holly); overflow-wrap:anywhere}
+.facts{display:grid; gap:14px; margin:4px 0 0; padding-top:16px; border-top:1px dashed var(--line); text-align:left}
+.facts:empty{display:none}
+.facts dt{font-size:13px; color:var(--muted); line-height:1.3}
+.facts dd{margin:2px 0 0; font-size:17px; font-weight:700; white-space:pre-line; overflow-wrap:anywhere}
+.tag-note{font-size:14px; color:var(--muted)}
+.pop{animation:pop .5s cubic-bezier(.2,.9,.3,1.3) both}
+@keyframes pop{from{transform:scale(.6); opacity:0} to{transform:none; opacity:1}}
+@media (prefers-reduced-motion: reduce){ .pop{animation:none} }
+
+/* in-person overlay */
+.ip{position:fixed; inset:0; z-index:20; background:var(--bg); overflow-y:auto;
+  padding:calc(24px + env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) calc(24px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px))}
+.ip-inner{max-width:560px; margin:0 auto; display:grid; gap:18px}
+.ip h2{font-size:22px}
+.names{display:grid; grid-template-columns:repeat(auto-fill, minmax(140px, 1fr)); gap:10px}
+.nbtn{font:inherit; font-size:17px; font-weight:700; text-align:left; padding:14px 16px; border-radius:12px; border:1px solid var(--line); background:var(--surface); color:var(--ink); cursor:pointer; min-width:0; overflow-wrap:anywhere}
+.nbtn:hover{border-color:var(--pine)}
+.nbtn.seen{color:var(--muted); background:var(--sunk)}
+.nbtn small{display:block; font-size:12px; font-weight:400; color:var(--muted)}
+.center{display:grid; gap:16px; justify-items:center; text-align:center; padding-top:6vh}
+.center .facts{width:min(420px, 100%)}
+.big{font-family:var(--display); font-weight:700; font-size:clamp(48px, 14vw, 72px); line-height:1; color:var(--holly); overflow-wrap:anywhere}
+</style>
+</head>
+<body>
+
+
+<!-- ===== Organizer setup ===== -->
+<div id="setup" class="wrap">
+  <header class="hdr">
+    <span class="eyebrow">Organizer's table</span>
+    <h1><span class="top">Haight Family</span> Kris Kindle</h1>
+    <p>Requested matches get locked in. Everyone else is drawn at random. Each person gets an email or text with a private link showing who they're shopping for and that person's form answers. You only ever see scrambled links, so the draw stays secret from you too.</p>
+  </header>
+
+  <div id="exBanner" class="banner" hidden>
+    <span>This is example data with made-up family members. Paste your real form responses in step 2.</span>
+    <button class="btn small ghost" id="clearEx" type="button">Start blank</button>
+  </div>
+
+  <section class="step" aria-labelledby="h1s">
+    <div class="step-h"><span class="num">1</span><div><h2 id="h1s">The basics</h2><p>The exchange name goes on every gift tag and email. The sign-off goes at the bottom of each email.</p></div></div>
+    <div class="fields">
+      <label class="f">Name of the exchange<input type="text" id="event" autocomplete="off"></label>
+      <label class="f">Sign emails as<input type="text" id="sign" autocomplete="off"></label>
+    </div>
+  </section>
+
+  <section class="step" aria-labelledby="h2s">
+    <div class="step-h"><span class="num">2</span><div><h2 id="h2s">Who's in</h2><p>Paste your Google Form responses, type names by hand, or both.</p></div></div>
+    <div class="sub">
+      <h3>From your sign-up form</h3>
+      <ol>
+        <li>Open the responses spreadsheet.</li>
+        <li>Click the corner box above row 1 to select everything, then copy.</li>
+        <li>Paste below. Paste again any time new responses come in.</li>
+      </ol>
+      <div class="row"><label class="btn small" for="csvFile" style="cursor:pointer">Or choose a CSV file</label><input type="file" id="csvFile" accept=".csv,.tsv,text/csv,text/tab-separated-values" style="position:absolute; width:1px; height:1px; opacity:0"><span class="hint">You can also drag the file onto the box.</span></div>
+      <textarea id="paste" spellcheck="false" aria-label="Paste form responses" placeholder="Paste the whole responses sheet here, question row included"></textarea>
+      <div class="notes" id="pasteNote"></div>
+      <div id="formCfg" style="display:grid; gap:14px"></div>
+    </div>
+    <label class="f">Everyone in the draw, one per line<textarea id="names" spellcheck="false"></textarea></label>
+    <span class="count" id="count"></span>
+    <div class="notes" id="missingNote"></div>
+  </section>
+
+  <section class="step" aria-labelledby="h3s">
+    <div class="step-h"><span class="num">3</span><div><h2 id="h3s"><span class="lock" aria-hidden="true">●</span> Requests</h2><p>Pairs listed here are guaranteed. Everyone else goes into the random draw.</p></div></div>
+    <div class="sub" id="formReqs" hidden>
+      <h3>Asked for on the form</h3>
+      <div id="formReqList"></div>
+      <div class="row"><button class="btn small" id="addAllReqs" type="button">Add all that work</button></div>
+    </div>
+    <div class="pairs" id="reqs"></div>
+    <div class="row"><button class="btn small" id="addReq" type="button">+ Add a request by hand</button></div>
+  </section>
+
+  <section class="step" aria-labelledby="h4s">
+    <div class="step-h"><span class="num">4</span><div><h2 id="h4s">Keep apart</h2><p>Optional. Pairs who shouldn't draw each other, like spouses or people in the same house. Works both ways.</p></div></div>
+    <div class="pairs" id="blocks"></div>
+    <div class="row"><button class="btn small" id="addBlock" type="button">+ Add a pair</button></div>
+  </section>
+
+  <section class="step" aria-labelledby="h5s">
+    <div class="step-h"><span class="num">5</span><div><h2 id="h5s">Draw</h2><p>On your own site, like GitHub Pages, leave the link blank. On Claude, use Share, then Copy link, make it viewable by anyone, and paste it here.</p></div></div>
+    <label class="f">Page link (only needed on Claude)<input type="url" id="base" autocomplete="off" placeholder="https://claude.ai/artifact/…" spellcheck="false"></label>
+    <div class="notes" id="notes"></div>
+    <div class="row" id="drawRow"><button class="btn primary" id="drawBtn" type="button">Draw names</button></div>
+  </section>
+
+  <section class="step results" id="results" hidden aria-labelledby="h6s">
+    <div class="step-h"><div><h2 id="h6s">The draw is done</h2><p>Each Email or Text button opens a ready-to-send message with that person's private link. Links pick up the latest form answers, so re-paste responses before sending if anything changed.</p></div></div>
+    <div class="summary" id="summary"></div>
+    <div class="notes" id="staleNote"></div>
+    <div class="list" id="list"></div>
+    <div class="notes" id="mailHint"></div>
+    <div class="row">
+      <button class="btn" id="copyAll" type="button" disabled>Copy all as a list</button>
+      <button class="btn" id="inPerson" type="button">Hand out in person</button>
+      <button class="btn ghost" id="redraw" type="button">Draw again</button>
+    </div>
+    <div id="confirmBox" hidden class="confirm">
+      <span>Links you've already sent will stop matching. Redo the draw?</span>
+      <button class="btn small" id="confirmYes" type="button">Yes, draw again</button>
+      <button class="btn small ghost" id="confirmNo" type="button">Keep this draw</button>
+    </div>
+  </section>
+
+  <section class="step" aria-labelledby="h7s">
+    <div class="step-h"><div><h2 id="h7s">Backup</h2><p>Saves your names, form answers, requests, and the draw as one scrambled file. Opening it won't show you any matches. Restore it on any device to pick up where you left off.</p></div></div>
+    <div class="row">
+      <button class="btn" id="backupBtn" type="button">Download backup</button>
+      <label class="btn ghost" for="restoreFile" style="cursor:pointer">Restore from backup</label>
+      <input type="file" id="restoreFile" accept=".txt,text/plain" style="position:absolute; width:1px; height:1px; opacity:0">
+    </div>
+    <div class="notes" id="backupNote"></div>
+    <div id="restoreConfirm" hidden class="confirm">
+      <span>This replaces everything on this page, including the current draw.</span>
+      <button class="btn small" id="restoreYes" type="button">Replace it</button>
+      <button class="btn small ghost" id="restoreNo" type="button">Cancel</button>
+    </div>
+  </section>
+</div>
+
+<!-- ===== Recipient view (opened from a link) ===== -->
+<main id="reveal" class="wrap" hidden>
+  <div class="tagwrap">
+    <svg class="string" viewBox="0 0 120 70" aria-hidden="true"><path d="M60 0 C 30 20, 90 40, 60 70" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+    <article class="tag" aria-live="polite">
+      <div class="hole"></div><div class="stitch"></div>
+      <p class="tag-event" id="rvEvent">Haight Family Kris Kindle</p>
+      <p class="hint" id="rvLoading">Opening your tag…</p>
+      <div id="rvGood" hidden style="display:grid; gap:14px">
+        <p class="tag-to">To <strong id="rvG"></strong></p>
+        <div id="rvCover" style="display:grid; gap:14px; justify-items:center">
+          <p class="hint">Make sure nobody's looking over your shoulder.</p>
+          <button class="btn primary" id="rvBtn" type="button">Reveal my person</button>
+        </div>
+        <div id="rvOut" hidden style="display:grid; gap:12px">
+          <p class="tag-label">You're shopping for</p>
+          <p class="tag-name pop" id="rvR"></p>
+          <dl class="facts" id="rvFacts"></dl>
+          <p class="tag-note">Keep it secret. You can open this link again any time.</p>
+        </div>
+      </div>
+      <div id="rvBad" hidden style="display:grid; gap:10px">
+        <p class="tag-to"><strong>This link looks incomplete.</strong></p>
+        <p class="hint">Part of it may have been cut off when it was copied. Ask the organizer to send it again.</p>
+      </div>
+    </article>
+    <button class="btn" id="rvBack" type="button" hidden>Back to setup</button>
+  </div>
+</main>
+
+<!-- ===== In-person hand-out ===== -->
+<div id="ip" class="ip" hidden role="dialog" aria-modal="true" aria-labelledby="ipH">
+  <div class="ip-inner">
+    <div id="ipList" style="display:grid; gap:16px">
+      <div class="row" style="justify-content:space-between">
+        <h2 id="ipH">Pass the phone</h2>
+        <button class="btn small" id="ipClose" type="button">Done</button>
+      </div>
+      <p class="hint">Each person taps their own name and reads it privately.</p>
+      <div class="names" id="ipNames"></div>
+    </div>
+    <div id="ipPass" class="center" hidden>
+      <p class="hint">Hand the phone to</p>
+      <p class="big" id="ipWho"></p>
+      <button class="btn primary" id="ipShow" type="button">I'm here. Show me</button>
+      <button class="btn ghost" id="ipBack" type="button">Not them, go back</button>
+    </div>
+    <div id="ipOut" class="center" hidden>
+      <p class="hint" id="ipFor"></p>
+      <p class="big pop" id="ipR"></p>
+      <dl class="facts" id="ipFacts"></dl>
+      <button class="btn primary" id="ipHide" type="button">Got it, hide it</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const $ = s => document.querySelector(s);
+  const STORE = 'kk-haight-v3';
+  const DEFAULT_EVENT = 'Haight Family Kris Kindle';
+
+  /* ---- example data (made-up people, same questions as the real form) ---- */
+  const EX_HEAD = ['Timestamp', 'Who are you?', 'Email Address or Cell Phone #', 'Are you open to people requesting their recipient this year?', 'If you CAN pick your recipient, who would your preferred recipient be?', 'Please list a few gift ideas or wishlist items for yourself', 'What are some other things that will help your gifter? Shirt size, favorite colors/flavors/scents/snacks/drinks, new hobbies', 'Where should folks mail stuff if you won\'t be in PK in person?'];
+  const EX_ROWS = [
+    ['11/8/2026 9:02:11', 'Gran', '(845) 555-0142', 'Yes', '', 'Gardening gloves, a good mystery novel', 'Lavender anything, Earl Grey, shortbread', ''],
+    ['11/8/2026 9:15:40', 'Uncle Pat', 'pat@example.com', 'Yes', '', 'Hot sauce sampler, Mets gear', 'XL shirts, smoky BBQ flavors, just got into fly fishing', '14 Birch Lane\nAlbany, NY 12203'],
+    ['11/8/2026 10:20:03', 'Aunt Joan', 'joan@example.com', 'No', '', 'Candles, a cozy throw', 'Loves deep green, chai, crossword books', '14 Birch Lane\nAlbany, NY 12203'],
+    ['11/8/2026 12:44:57', 'Sam', 'sam@example.com', 'Yes', 'Maya', 'Board games, coffee beans', 'Shirt size L, dark roast, started bouldering', ''],
+    ['11/9/2026 8:05:30', 'Riley', 'riley@example.com', 'Yes', 'Gran', 'Art supplies, sketchbooks', 'Favorite color teal, sour candy', ''],
+    ['11/9/2026 18:31:12', 'Maya', 'maya@example.com', 'Yes', '', 'Running socks, an audiobook credit', 'Size M, citrus scents, oat milk lattes', '220 Elm St, Apt 3B\nRaleigh, NC 27601'],
+    ['11/10/2026 7:12:48', 'Theo', '845-555-0177', 'Yes', 'Aunt Joan', 'Anything Star Wars, jigsaw puzzles', 'Shirt size S, peanut butter everything', ''],
+    ['11/10/2026 21:09:05', 'Jess', 'jess@example.com', 'Yes', 'No preference', 'Houseplants, cookbooks', 'Loves yellow, spicy snacks, learning pottery', '']
+  ];
+  const toTSV = rows => rows.map(r => r.map(c => /[\t\n"]/.test(c) ? '"' + c.replace(/"/g,'""') + '"' : c).join('\t')).join('\n');
+  const clone = o => JSON.parse(JSON.stringify(o));
+  const EXAMPLE = {
+    event: DEFAULT_EVENT, sign: 'Mush',
+    namesText: EX_ROWS.map(r => r[1]).join('\n'),
+    pasteText: toTSV([EX_HEAD].concat(EX_ROWS)),
+    form: null,
+    requests:[{g:'Riley', r:'Gran'}], blocks:[{a:'Uncle Pat', b:'Aunt Joan'}],
+    base:'', draw:null, sent:{}, removed:[], example:true
+  };
+  let S = load();
+  function load(){
+    try{ const v = JSON.parse(localStorage.getItem(STORE)); if(v && typeof v.namesText === 'string') return Object.assign(clone(EXAMPLE), v); }catch(e){}
+    return clone(EXAMPLE);
+  }
+  function save(){ try{ localStorage.setItem(STORE, JSON.stringify(S)); }catch(e){} }
+
+  /* ---- scrambling: keeps pairings out of sight; not a vault ---- */
+  const K = 'christkindl-draw';
+  function xor(bytes, s){ const o = new Uint8Array(bytes.length); for(let i=0;i<bytes.length;i++) o[i] = bytes[i] ^ K.charCodeAt(i % K.length) ^ ((s + i*29) & 255); return o; }
+  function enc(obj){
+    const s = crypto.getRandomValues(new Uint8Array(1))[0];
+    const b = xor(new TextEncoder().encode(JSON.stringify(obj)), s);
+    let h = s.toString(16).padStart(2,'0'); b.forEach(x => h += x.toString(16).padStart(2,'0')); return h;
+  }
+  function dec(h){
+    if(!h || !/^[0-9a-f]+$/.test(h) || h.length < 4 || h.length % 2) return null;
+    const s = parseInt(h.slice(0,2),16), raw = new Uint8Array((h.length-2)/2);
+    for(let i=0;i<raw.length;i++) raw[i] = parseInt(h.substr(2+i*2,2),16);
+    try{ return JSON.parse(new TextDecoder().decode(xor(raw, s))); }catch(e){ return null; }
+  }
+  const B32 = 'abcdefghijklmnopqrstuvwxyz234567';
+  function b32(bytes){ let bits=0, val=0, out=''; for(const b of bytes){ val = (val<<8) | b; bits += 8; while(bits >= 5){ out += B32[(val >>> (bits-5)) & 31]; bits -= 5; } val &= (1<<bits)-1; } if(bits > 0) out += B32[(val << (5-bits)) & 31]; return out; }
+  function unb32(str){ let bits=0, val=0; const out=[]; for(const c of str){ const v = B32.indexOf(c); if(v < 0) return null; val = (val<<5) | v; bits += 5; if(bits >= 8){ out.push((val >>> (bits-8)) & 255); bits -= 8; } val &= (1<<bits)-1; } return new Uint8Array(out); }
+  async function pipe(bytes, stream){ return new Uint8Array(await new Response(new Blob([bytes]).stream().pipeThrough(stream)).arrayBuffer()); }
+  async function packLink(obj){
+    let bytes = new TextEncoder().encode(JSON.stringify(obj)), tag = 'p';
+    try{ if(window.CompressionStream){ const c = await pipe(bytes, new CompressionStream('deflate-raw')); if(c.length < bytes.length){ bytes = c; tag = 'z'; } } }catch(e){}
+    const s = crypto.getRandomValues(new Uint8Array(1))[0];
+    const out = new Uint8Array(bytes.length + 1); out[0] = s; out.set(xor(bytes, s), 1);
+    return 'k' + tag + '-' + b32(out);
+  }
+  async function unpackLink(h){
+    const m = /^k([pz])-([a-z2-7]+)$/.exec(h); if(!m) return null;
+    const raw = unb32(m[2]); if(!raw || raw.length < 2) return null;
+    let bytes = xor(raw.slice(1), raw[0]);
+    try{ if(m[1] === 'z') bytes = await pipe(bytes, new DecompressionStream('deflate-raw')); return JSON.parse(new TextDecoder().decode(bytes)); }catch(e){ return null; }
+  }
+
+  /* ---- helpers ---- */
+  const clean = s => String(s || '').trim().replace(/\s+/g,' ');
+  function rawNames(){ return S.namesText.split('\n').map(clean).filter(Boolean); }
+  function nameList(){ const seen = new Set(), out = []; rawNames().forEach(n => { const k = n.toLowerCase(); if(!seen.has(k)){ seen.add(k); out.push(n); } }); return out; }
+  function rand(n){ const a = new Uint32Array(1); crypto.getRandomValues(a); return a[0] % n; }
+  function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j = rand(i+1); [a[i],a[j]] = [a[j],a[i]]; } return a; }
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const first = n => n.split(' ')[0];
+  const eventName = () => S.event.trim() || DEFAULT_EVENT;
+  const validReqs = () => S.requests.filter(q => q.g && q.r);
+  const validBlocks = () => S.blocks.filter(x => x.a && x.b && x.a !== x.b);
+  function fingerprint(){
+    return JSON.stringify({n: nameList().slice().sort(), r: validReqs().map(q => q.g+'>'+q.r).sort(), b: validBlocks().map(x => [x.a,x.b].sort().join('|')).sort()});
+  }
+
+  /* ---- form responses ---- */
+  function parseTable(text){
+    const firstLine = text.split(/\r?\n/)[0], d = firstLine.indexOf('\t') >= 0 ? '\t' : ',', rows = []; let row = [], f = '', q = false;
+    for(let i=0;i<text.length;i++){
+      const c = text[i];
+      if(q){ if(c === '"'){ if(text[i+1] === '"'){ f += '"'; i++; } else q = false; } else f += c; }
+      else if(c === '"' && f === '') q = true;
+      else if(c === d){ row.push(f); f = ''; }
+      else if(c === '\n' || c === '\r'){ if(c === '\r' && text[i+1] === '\n') i++; row.push(f); rows.push(row); row = []; f = ''; }
+      else f += c;
+    }
+    if(f !== '' || row.length){ row.push(f); rows.push(row); }
+    return rows.filter(r => r.some(x => x.trim()));
+  }
+  function detectCols(headers){
+    const find = re => headers.findIndex(h => re.test(h));
+    let nameCol = find(/who are you|your name|^name/i); if(nameCol < 0) nameCol = find(/name/i);
+    if(nameCol < 0) nameCol = Math.max(0, headers.findIndex(h => !/timestamp|e-?mail/i.test(h)));
+    const emailCol = find(/e-?mail|phone|cell/i);
+    const openCol = find(/open to/i);
+    const prefCol = headers.findIndex((h,i) => i !== openCol && /preferred recipient|pick your recipient|preferred/i.test(h));
+    return {nameCol, emailCol, openCol, prefCol};
+  }
+  const hiddenCols = f => [f.nameCol, f.emailCol, f.openCol, f.prefCol];
+  function applyPaste(text){
+    S.pasteText = text;
+    if(!text.trim()){ S.form = null; return {k:'', t:''}; }
+    const t = parseTable(text);
+    if(t.length < 2) return {k:'warn', t:'That looks like only one row. Copy the whole sheet, including the question row at the top.'};
+    const headers = t[0].map(h => h.trim()), rows = t.slice(1);
+    const same = S.form && S.form.headers.join('\u0001') === headers.join('\u0001');
+    if(same){ S.form.rows = rows; }
+    else {
+      const c = detectCols(headers);
+      S.form = Object.assign({headers, rows}, c, {show: headers.map((h,i) => !hiddenCols(c).includes(i) && !/timestamp/i.test(h))});
+    }
+    const added = syncNamesFromForm();
+    const skipped = formNames().filter(n => (S.removed || []).includes(n.toLowerCase()));
+    return {k:'ok', t:'Read ' + rows.length + (rows.length === 1 ? ' response' : ' responses') + '.' + (added ? ' Added ' + added + ' new ' + (added === 1 ? 'name' : 'names') + ' to the list.' : '') + (skipped.length ? ' Left out ' + skipped.join(', ') + ' because you removed them from the list.' : '')};
+  }
+  function latestRows(){ const m = new Map(); if(S.form) S.form.rows.forEach(r => { const n = clean(r[S.form.nameCol]); if(n) m.set(n.toLowerCase(), r); }); return m; }
+  function formNames(){
+    if(!S.form) return [];
+    const m = new Map(); S.form.rows.forEach(r => { const n = clean(r[S.form.nameCol]); if(n) m.set(n.toLowerCase(), n); });
+    return [...m.values()];
+  }
+  function syncNamesFromForm(){
+    const cur = S.example ? [] : rawNames(), have = new Set(cur.map(n => n.toLowerCase()));
+    const gone = new Set(S.removed || []);
+    const add = formNames().filter(n => !have.has(n.toLowerCase()) && !gone.has(n.toLowerCase()));
+    S.namesText = cur.concat(add).join('\n');
+    return add.length;
+  }
+  function infoFor(name){
+    if(!S.form) return [];
+    const f = S.form, row = latestRows().get(name.toLowerCase()); if(!row) return [];
+    const hide = hiddenCols(f);
+    return f.headers.map((h,i) => [h || ('Question ' + (i+1)), String(row[i] || '').trim(), i])
+      .filter(x => !hide.includes(x[2]) && f.show[x[2]] && x[1]).map(x => [x[0], x[1]]);
+  }
+  function contactFor(name){
+    if(!S.form || S.form.emailCol < 0) return null;
+    const row = latestRows().get(name.toLowerCase());
+    const v = row ? clean(row[S.form.emailCol]) : '';
+    const em = v.match(/[^\s@,;<>()]+@[^\s@,;<>()]+\.[^\s@,;<>()]+/);
+    if(em) return {type:'email', value: em[0], show: em[0]};
+    const digits = v.replace(/\D/g, '');
+    if(digits.length === 10) return {type:'phone', value: '+1' + digits, show: v};
+    if(digits.length === 11 && digits[0] === '1') return {type:'phone', value: '+' + digits, show: v};
+    if(digits.length > 11 && v.trim()[0] === '+') return {type:'phone', value: '+' + digits, show: v};
+    return null;
+  }
+  function factsHTML(list){ return (list || []).map(x => '<div><dt>' + esc(x[0]) + '</dt><dd>' + esc(x[1]) + '</dd></div>').join(''); }
+
+  /* ---- requests from the form ---- */
+  const NOPREF = /^(no|none|nope|n\/?a|-+|no preference|no pref|no one|nobody|anyone|anybody|whoever|surprise me|doesn'?t matter|idk)\.?!?$/i;
+  function matchName(text){
+    const t = clean(text).toLowerCase(); if(!t) return null;
+    const names = nameList();
+    let hit = names.filter(n => n.toLowerCase() === t); if(hit.length === 1) return hit[0];
+    hit = names.filter(n => n.toLowerCase().split(' ')[0] === t.split(' ')[0]); if(hit.length === 1) return hit[0];
+    hit = names.filter(n => t.includes(n.toLowerCase()) || n.toLowerCase().includes(t)); if(hit.length === 1) return hit[0];
+    return null;
+  }
+  let lastFormReqs = [];
+  function formRequests(){
+    const f = S.form; if(!f || f.prefCol < 0) return [];
+    const rows = latestRows(), out = [], reqs = validReqs();
+    nameList().forEach(g => {
+      const row = rows.get(g.toLowerCase()); if(!row) return;
+      const text = clean(row[f.prefCol]); if(!text || NOPREF.test(text)) return;
+      const r = matchName(text), item = {g, text, r, st:'', msg:''};
+      if(!r){ item.st = 'nomatch'; item.msg = (S.removed || []).includes(clean(text).toLowerCase()) ? text + ' isn\'t in the draw this year.' : 'Couldn\'t match "' + text + '" to anyone in the draw. Add it by hand below if you know who they meant.'; }
+      else if(r === g){ item.st = 'skip'; item.msg = g + ' put their own name.'; }
+      else if(reqs.some(q => q.g === g && q.r === r)){ item.st = 'added'; }
+      else {
+        const rr = rows.get(r.toLowerCase()), open = (f.openCol >= 0 && rr) ? clean(rr[f.openCol]) : '';
+        if(f.openCol >= 0 && /^n/i.test(open)){ item.st = 'declined'; item.msg = r + ' said no to being requested, so ' + g + ' goes into the random draw.'; }
+        else if(reqs.some(q => q.g === g)){ item.st = 'conflict'; item.msg = g + ' already has a different request below.'; }
+        else if(reqs.some(q => q.r === r)){ item.st = 'conflict'; item.msg = 'Someone else is already set to get ' + r + '.'; }
+        else if(f.openCol >= 0 && !rr){ item.st = 'unknown'; item.msg = r + ' hasn\'t filled out the form yet, so you don\'t know if they\'re open to it.'; }
+        else { item.st = 'ready'; item.msg = open ? r + ' is open to being requested.' : ''; }
+      }
+      out.push(item);
+    });
+    const counts = {}; out.filter(x => x.st === 'ready').forEach(x => counts[x.r] = (counts[x.r]||0) + 1);
+    out.forEach(x => { if(x.st === 'ready' && counts[x.r] > 1){ x.st = 'contested'; x.msg = 'More than one person asked for ' + x.r + '. Add the one you want to honor.'; } });
+    return out;
+  }
+  function renderFormReqs(){
+    const box = $('#formReqs');
+    if(!S.form || S.form.prefCol < 0){ box.hidden = true; return; }
+    box.hidden = false;
+    const list = lastFormReqs = formRequests();
+    if(!list.length){ $('#formReqList').innerHTML = '<p class="empty">Nobody has asked for anyone yet.</p>'; $('#addAllReqs').hidden = true; return; }
+    $('#formReqList').innerHTML = list.map((x,i) =>
+      '<div class="freq"><div class="freq-t"><span><strong>' + esc(x.g) + '</strong> asked for <strong>' + esc(x.r || ('"' + x.text + '"')) + '</strong></span>' +
+      (x.msg ? '<span class="freq-m st-' + x.st + '">' + esc(x.msg) + '</span>' : '') + '</div>' +
+      (['ready','unknown','contested'].includes(x.st) ? '<button class="btn small" type="button" data-addreq="' + i + '">Add</button>' : (x.st === 'added' ? '<span class="chip ok">Added</span>' : '')) +
+      '</div>').join('');
+    $('#addAllReqs').hidden = !list.some(x => x.st === 'ready');
+  }
+  function addRequest(g, r){
+    S.requests = S.requests.filter(q => q.g || q.r);
+    S.requests.push({g, r});
+  }
+
+  /* ---- validation ---- */
+  function issues(){
+    const out = [], list = rawNames(), lower = list.map(n => n.toLowerCase());
+    const dups = [...new Set(lower.filter((n,i) => lower.indexOf(n) !== i))].map(d => list[lower.indexOf(d)]);
+    if(dups.length) out.push({k:'warn', t:'Listed twice: ' + dups.join(', ') + '. They\'re counted once. If these are two different people, add a last initial.'});
+    if(nameList().length < 3) out.push({k:'err', t:'Add at least 3 people to run a draw.'});
+    const reqs = validReqs(), gs = {}, rs = {};
+    reqs.forEach(q => {
+      if(q.g === q.r) out.push({k:'err', t: q.g + ' is set to draw themselves. Pick someone else.'});
+      gs[q.g] = (gs[q.g]||0) + 1; rs[q.r] = (rs[q.r]||0) + 1;
+    });
+    Object.keys(gs).filter(n => gs[n] > 1).forEach(n => out.push({k:'err', t: n + ' has more than one request. Each person gives one gift.'}));
+    Object.keys(rs).filter(n => rs[n] > 1).forEach(n => out.push({k:'err', t: 'More than one person is set to get ' + n + '. Remove all but one of those requests.'}));
+    if(S.requests.some(q => !q.g !== !q.r)) out.push({k:'warn', t:'A request is only half filled in. It will be ignored until both names are picked.'});
+    const bl = validBlocks();
+    reqs.forEach(q => { if(bl.some(x => (x.a===q.g && x.b===q.r) || (x.b===q.g && x.a===q.r))) out.push({k:'warn', t: q.g + ' asked for ' + q.r + ', who is also on the keep-apart list. The request wins.'}); });
+    return out;
+  }
+
+  /* ---- the draw ---- */
+  function solve(){
+    const people = nameList(), reqs = validReqs();
+    const fixed = reqs.map(q => [q.g, q.r]);
+    const fixedG = new Set(reqs.map(q => q.g)), takenR = new Set(reqs.map(q => q.r));
+    const givers = people.filter(p => !fixedG.has(p)), pool = people.filter(p => !takenR.has(p));
+    const blocked = new Set();
+    validBlocks().forEach(x => { blocked.add(x.a+'\u0000'+x.b); blocked.add(x.b+'\u0000'+x.a); });
+    const ok = (g,r) => g !== r && !blocked.has(g+'\u0000'+r);
+    for(let t=0; t<40000; t++){ // uniform pick among valid draws
+      const p = shuffle(pool.slice());
+      if(givers.every((g,i) => ok(g, p[i]))) return fixed.concat(givers.map((g,i) => [g, p[i]]));
+    }
+    const order = shuffle(givers.slice()), res = []; // fallback search for tight setups
+    function bt(i, avail){
+      if(i === order.length) return true;
+      for(const r of shuffle(avail.slice())){
+        if(ok(order[i], r)){ res.push([order[i], r]); if(bt(i+1, avail.filter(x => x !== r))) return true; res.pop(); }
+      }
+      return false;
+    }
+    return bt(0, pool) ? fixed.concat(res) : null;
+  }
+
+  /* ---- rendering: setup ---- */
+  function optionList(sel, placeholder){
+    return '<option value="">' + placeholder + '</option>' + nameList().map(n => '<option' + (n === sel ? ' selected' : '') + ' value="' + esc(n) + '">' + esc(n) + '</option>').join('');
+  }
+  function pruneSelections(){
+    const set = new Set(nameList());
+    S.requests.forEach(q => { if(q.g && !set.has(q.g)) q.g = ''; if(q.r && !set.has(q.r)) q.r = ''; });
+    S.blocks.forEach(x => { if(x.a && !set.has(x.a)) x.a = ''; if(x.b && !set.has(x.b)) x.b = ''; });
+  }
+  function renderPairs(){
+    $('#reqs').innerHTML = S.requests.length ? S.requests.map((q,i) =>
+      '<div class="pair">' +
+        '<select class="s1" id="rg' + i + '" data-i="' + i + '" data-f="g" aria-label="Who asked">' + optionList(q.g, 'Who asked…') + '</select>' +
+        '<span class="mid">gets</span>' +
+        '<select class="s2" id="rr' + i + '" data-i="' + i + '" data-f="r" aria-label="Gets">' + optionList(q.r, 'Gets…') + '</select>' +
+        '<button class="rm" type="button" data-rm="req" data-i="' + i + '" aria-label="Remove request">×</button>' +
+      '</div>').join('') : '<p class="empty">No locked-in requests yet. Everyone will be drawn at random.</p>';
+    $('#blocks').innerHTML = S.blocks.length ? S.blocks.map((x,i) =>
+      '<div class="pair">' +
+        '<select class="s1" id="ba' + i + '" data-i="' + i + '" data-f="a" aria-label="First person">' + optionList(x.a, 'Choose…') + '</select>' +
+        '<span class="mid">and</span>' +
+        '<select class="s2" id="bb' + i + '" data-i="' + i + '" data-f="b" aria-label="Second person">' + optionList(x.b, 'Choose…') + '</select>' +
+        '<button class="rm" type="button" data-rm="block" data-i="' + i + '" aria-label="Remove pair">×</button>' +
+      '</div>').join('') : '<p class="empty">None. Anyone can draw anyone.</p>';
+    renderFormReqs();
+  }
+  function renderForm(){
+    const f = S.form, box = $('#formCfg');
+    if(!f){ box.innerHTML = ''; return; }
+    const label = (h,i) => esc(h || ('Column ' + (i+1)));
+    const hide = hiddenCols(f);
+    box.innerHTML =
+      '<div class="fields">' +
+        '<label class="f">Question with their name<select id="nameCol">' + f.headers.map((h,i) => '<option value="' + i + '"' + (i === f.nameCol ? ' selected' : '') + '>' + label(h,i) + '</option>').join('') + '</select></label>' +
+        '<label class="f">Column with their email or phone<select id="emailCol"><option value="-1">None</option>' + f.headers.map((h,i) => '<option value="' + i + '"' + (i === f.emailCol ? ' selected' : '') + '>' + label(h,i) + '</option>').join('') + '</select></label>' +
+      '</div>' +
+      '<fieldset class="cols"><legend>Show these answers on the gift tag</legend>' +
+        f.headers.map((h,i) => hide.includes(i) ? '' : '<label class="ck"><input type="checkbox" id="col' + i + '" data-col="' + i + '"' + (f.show[i] ? ' checked' : '') + '><span>' + label(h,i) + '</span></label>').join('') +
+      '</fieldset>' +
+      ((f.openCol >= 0 || f.prefCol >= 0) ? '<p class="hint">The two request questions never appear on gift tags. They feed the suggestions in step 3.</p>' : '') +
+      '<div class="row"><button class="btn small" id="previewBtn" type="button">Preview a gift tag</button><button class="btn small ghost" id="clearForm" type="button">Clear form data</button></div>';
+  }
+  function renderNotes(){
+    const iss = issues();
+    $('#notes').innerHTML = iss.map(x => '<p class="note ' + x.k + '">' + esc(x.t) + '</p>').join('');
+    $('#drawBtn').disabled = iss.some(x => x.k === 'err');
+    const n = nameList().length;
+    $('#count').textContent = n + (n === 1 ? ' person' : ' people');
+    $('#exBanner').hidden = !S.example;
+    if(S.form){
+      const have = new Set(formNames().map(x => x.toLowerCase()));
+      const missing = nameList().filter(x => !have.has(x.toLowerCase()));
+      $('#missingNote').innerHTML = missing.length ? '<p class="note warn">No form answers yet from ' + esc(missing.join(', ')) + '. Their givers will only see their name, and you won\'t have an email or phone for them.</p>' : '';
+    } else $('#missingNote').innerHTML = '';
+  }
+  function renderSetup(){
+    $('#event').value = S.event; $('#sign').value = S.sign; $('#names').value = S.namesText; $('#base').value = S.base; $('#paste').value = S.pasteText || '';
+    renderForm(); renderPairs(); renderNotes(); renderResults();
+  }
+
+  /* ---- rendering: results ---- */
+  function currentDraw(){ return S.draw ? dec(S.draw) : null; }
+  const selfHosted = () => /^https?:$/.test(location.protocol) && !/claude/i.test(location.hostname);
+  function baseLink(){
+    const b = (S.base || '').trim().replace(/#.*$/, '');
+    if(/^https?:\/\/\S+$/i.test(b)) return b;
+    if(selfHosted()) return location.href.replace(/#.*$/, '');
+    return '';
+  }
+  function mailParts(g, link){
+    const sign = S.sign.trim();
+    const subject = 'Your ' + eventName() + ' match';
+    const body = 'Hi ' + first(g) + ',\n\n' +
+      'The ' + eventName() + ' draw is done! Open your private link to see who you\'re shopping for, plus their wishlist and where to mail your gift if they won\'t be in PK:\n\n' +
+      link + '\n\n' +
+      'Keep it secret, and please don\'t forward this one.' + (sign ? '\n\n' + sign : '');
+    return {subject, body};
+  }
+  function textBody(g, link){
+    const sign = S.sign.trim();
+    return 'Hi ' + first(g) + '! The ' + eventName() + ' draw is done. Here\'s your private link to see who you\'re shopping for, their wishlist, and where to mail your gift. Keep it secret!\n\n' + link + (sign ? '\n\n- ' + sign : '');
+  }
+  function contactHref(g, c, link){
+    if(c.type === 'email'){
+      const m = mailParts(g, link);
+      return 'mailto:' + encodeURIComponent(c.value).replace(/%40/g, '@') + '?subject=' + encodeURIComponent(m.subject) + '&body=' + encodeURIComponent(m.body);
+    }
+    return 'sms:' + c.value + '?&body=' + encodeURIComponent(textBody(g, link));
+  }
+  function messageText(g, c, link){
+    if(c && c.type === 'email'){ const m = mailParts(g, link); return 'To: ' + c.value + '\nSubject: ' + m.subject + '\n\n' + m.body; }
+    return textBody(g, link);
+  }
+  const linkCache = new Map(); let linkGen = 0;
+  async function buildLinks(d){
+    const gen = ++linkGen; linkCache.clear(); $('#copyAll').disabled = true;
+    const base = baseLink(); if(!base) return;
+    for(const pr of d.p){
+      const h = await packLink({g: pr[0], r: pr[1], e: eventName(), i: infoFor(pr[1])});
+      if(gen !== linkGen) return;
+      const link = base + '#' + h; linkCache.set(pr[0], link);
+      const b = document.querySelector('[data-copy="' + CSS.escape(pr[0]) + '"]'); if(b) b.disabled = false;
+      const a = document.querySelector('[data-mail="' + CSS.escape(pr[0]) + '"]');
+      const c = contactFor(pr[0]);
+      if(a && c){ a.href = contactHref(pr[0], c, link); a.removeAttribute('aria-disabled'); }
+    }
+    $('#copyAll').disabled = false;
+  }
+  function sentLabel(how){ return ({email:'Email opened', text:'Text opened', copy:'Copied'})[how] || 'Not sent yet'; }
+  function renderResults(){
+    const d = currentDraw();
+    $('#results').hidden = !d; $('#drawRow').hidden = !!d;
+    if(!d){ linkGen++; return; }
+    const n = d.p.length;
+    $('#summary').innerHTML =
+      '<span class="chip ok">' + n + ' people, one gift each</span>' +
+      '<span class="chip lockc">' + d.lock + (d.lock === 1 ? ' request' : ' requests') + ' locked in</span>' +
+      '<span class="chip">' + (n - d.lock) + ' drawn at random</span>' +
+      '<span class="chip" id="sentChip">' + Object.keys(S.sent).length + ' of ' + n + ' sent</span>';
+    $('#staleNote').innerHTML = d.f !== fingerprint()
+      ? '<p class="note warn">You changed the names, requests, or keep-apart pairs after this draw. Draw again for the changes to count.</p>' : '';
+    const hasBase = !!baseLink(), names = nameList();
+    const order = names.filter(nm => d.p.some(p => p[0] === nm)).concat(d.p.map(p => p[0]).filter(g => !names.includes(g)));
+    let noContact = 0;
+    $('#list').innerHTML = order.map(g => {
+      const how = S.sent[g], c = contactFor(g);
+      if(!c) noContact++;
+      return '<div class="li">' +
+        '<span class="who">' + esc(g) + '<small>' + (c ? esc(c.show) : 'No email or phone on file') + '</small></span>' +
+        '<span class="state' + (how ? ' sent' : '') + '" data-state="' + esc(g) + '">' + sentLabel(how) + '</span>' +
+        (c ? '<a class="btn small mail" data-mail="' + esc(g) + '" data-kind="' + c.type + '" aria-disabled="true">' + (c.type === 'email' ? 'Email ' : 'Text ') + esc(first(g)) + '</a>' : '') +
+        '<button class="btn small" type="button" data-copy="' + esc(g) + '" disabled>' + (c ? 'Copy message' : 'Copy text') + '</button>' +
+      '</div>';
+    }).join('');
+    const hints = [];
+    if(!hasBase) hints.push('<p class="note warn">Paste the page link in step 5 to turn on the email and copy buttons.</p>');
+    if(noContact) hints.push('<p class="note warn">' + noContact + (noContact === 1 ? ' person has' : ' people have') + ' no usable email or phone from the form. Use Copy text and send it however you reach them.</p>');
+    hints.push('<p class="hint">Text buttons open Messages on your phone, so send texts from your phone. On a computer, Copy message works for anyone.</p>');
+    if(!selfHosted()) hints.push('<p class="hint">If the Email and Text buttons don\'t open anything here, use the GitHub Pages copy.</p>');
+    $('#mailHint').innerHTML = hints.join('');
+    $('#confirmBox').hidden = true;
+    buildLinks(d);
+  }
+  function markSent(g, how){
+    if(!S.sent[g] || how !== 'copy') S.sent[g] = how; save();
+    const st = document.querySelector('[data-state="' + CSS.escape(g) + '"]');
+    if(st){ st.textContent = sentLabel(S.sent[g]); st.classList.add('sent'); }
+    const d = currentDraw(), chip = $('#sentChip'); if(chip && d) chip.textContent = Object.keys(S.sent).length + ' of ' + d.p.length + ' sent';
+  }
+
+  /* ---- events ---- */
+  let tEvent, tNames, tPaste;
+  $('#event').addEventListener('input', e => { S.event = e.target.value; save(); clearTimeout(tEvent); tEvent = setTimeout(renderResults, 300); });
+  $('#sign').addEventListener('input', e => { S.sign = e.target.value; save(); clearTimeout(tEvent); tEvent = setTimeout(renderResults, 300); });
+  $('#base').addEventListener('input', e => { S.base = e.target.value; save(); renderResults(); });
+  $('#names').addEventListener('input', e => {
+    S.namesText = e.target.value; S.example = false;
+    const now = new Set(rawNames().map(n => n.toLowerCase()));
+    S.removed = formNames().map(n => n.toLowerCase()).filter(n => !now.has(n));
+    save();
+    clearTimeout(tNames); tNames = setTimeout(() => { pruneSelections(); save(); renderPairs(); renderNotes(); renderResults(); }, 250);
+  });
+  function afterPaste(msg){
+    pruneSelections(); save();
+    $('#names').value = S.namesText;
+    $('#pasteNote').innerHTML = msg && msg.t ? '<p class="note ' + msg.k + '">' + esc(msg.t) + '</p>' : '';
+    renderForm(); renderPairs(); renderNotes(); renderResults();
+  }
+  function takeTable(v){ if(S.example){ S.example = false; S.namesText = ''; S.requests = []; S.blocks = []; S.draw = null; S.sent = {}; S.form = null; S.removed = []; } afterPaste(applyPaste(v)); }
+  $('#paste').addEventListener('input', e => {
+    const v = e.target.value;
+    clearTimeout(tPaste); tPaste = setTimeout(() => takeTable(v), 300);
+  });
+  function readFile(file){
+    if(!file) return;
+    const r = new FileReader();
+    r.onload = () => { const v = String(r.result || '').replace(/^\uFEFF/, ''); $('#paste').value = v; takeTable(v); };
+    r.onerror = () => { $('#pasteNote').innerHTML = '<p class="note err">That file couldn\'t be read. Download it again as a CSV from the responses sheet and retry.</p>'; };
+    r.readAsText(file);
+  }
+  $('#csvFile').addEventListener('change', e => { readFile(e.target.files[0]); e.target.value = ''; });
+  $('#paste').addEventListener('dragover', e => { e.preventDefault(); });
+  $('#paste').addEventListener('drop', e => { if(e.dataTransfer && e.dataTransfer.files.length){ e.preventDefault(); readFile(e.dataTransfer.files[0]); } });
+  $('#clearEx').addEventListener('click', () => {
+    S.namesText = ''; S.pasteText = ''; S.form = null; S.requests = []; S.blocks = []; S.example = false; S.draw = null; S.sent = {}; S.removed = [];
+    save(); $('#pasteNote').innerHTML = ''; renderSetup(); $('#paste').focus();
+  });
+  $('#addReq').addEventListener('click', () => { S.requests.push({g:'', r:''}); save(); renderPairs(); renderNotes(); });
+  $('#addBlock').addEventListener('click', () => { S.blocks.push({a:'', b:''}); save(); renderPairs(); renderNotes(); });
+  $('#addAllReqs').addEventListener('click', () => {
+    lastFormReqs.filter(x => x.st === 'ready').forEach(x => addRequest(x.g, x.r));
+    save(); renderPairs(); renderNotes(); renderResults();
+  });
+
+  document.addEventListener('change', e => {
+    const el = e.target;
+    if(el.id === 'nameCol' && S.form){
+      S.form.nameCol = +el.value; S.removed = []; syncNamesFromForm(); pruneSelections(); save();
+      $('#names').value = S.namesText; renderForm(); renderPairs(); renderNotes(); renderResults(); return;
+    }
+    if(el.id === 'emailCol' && S.form){ S.form.emailCol = +el.value; save(); renderForm(); renderResults(); return; }
+    if(el.dataset.col !== undefined && S.form){ S.form.show[+el.dataset.col] = el.checked; save(); renderResults(); return; }
+    if(el.tagName !== 'SELECT' || el.dataset.i === undefined) return;
+    const i = +el.dataset.i, f = el.dataset.f;
+    if(f === 'g' || f === 'r') S.requests[i][f] = el.value; else S.blocks[i][f] = el.value;
+    S.example = false; save(); renderPairs(); renderNotes(); renderResults();
+  });
+  document.addEventListener('click', e => {
+    const rm = e.target.closest('[data-rm]');
+    if(rm){ (rm.dataset.rm === 'req' ? S.requests : S.blocks).splice(+rm.dataset.i, 1); save(); renderPairs(); renderNotes(); renderResults(); return; }
+    const ar = e.target.closest('[data-addreq]');
+    if(ar){ const x = lastFormReqs[+ar.dataset.addreq]; if(x && x.r){ addRequest(x.g, x.r); save(); renderPairs(); renderNotes(); renderResults(); } return; }
+    const ml = e.target.closest('[data-mail]');
+    if(ml){ if(ml.getAttribute('href')) markSent(ml.dataset.mail, ml.dataset.kind === 'email' ? 'email' : 'text'); return; }
+    const cp = e.target.closest('[data-copy]'); if(cp){ copyLink(cp); return; }
+    if(e.target.id === 'clearForm'){ S.form = null; S.pasteText = ''; save(); $('#paste').value = ''; $('#pasteNote').innerHTML = ''; renderForm(); renderPairs(); renderNotes(); renderResults(); return; }
+    if(e.target.id === 'previewBtn') preview();
+  });
+
+  async function preview(){
+    const who = formNames().find(n => infoFor(n).length) || nameList()[0];
+    if(!who) return;
+    location.hash = await packLink({g:'you', r: who, e: eventName(), i: infoFor(who), pv: 1});
+  }
+
+  function doDraw(){
+    if(issues().some(x => x.k === 'err')) return;
+    const res = solve();
+    if(!res){
+      $('#notes').insertAdjacentHTML('beforeend', '<p class="note err">No draw works with these rules. Usually a keep-apart pair leaves someone with nobody left to draw. Remove a pair or a request and try again.</p>');
+      return;
+    }
+    S.draw = enc({p: res, f: fingerprint(), lock: validReqs().length, at: Date.now()});
+    S.sent = {}; S.example = false; save(); renderNotes(); renderResults();
+    setBackupNote('warn', 'New draw made. Download a backup now so you can\'t lose it.');
+    $('#results').scrollIntoView({behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block:'start'});
+  }
+  $('#drawBtn').addEventListener('click', doDraw);
+  $('#redraw').addEventListener('click', () => { $('#confirmBox').hidden = false; });
+  $('#confirmNo').addEventListener('click', () => { $('#confirmBox').hidden = true; });
+  $('#confirmYes').addEventListener('click', () => { S.draw = null; S.sent = {}; save(); renderResults(); doDraw(); });
+
+  function copyText(text, onOk, onFail){
+    try{ navigator.clipboard.writeText(text).then(onOk, onFail); }catch(e){ onFail(); }
+  }
+  function copyLink(btn){
+    const g = btn.dataset.copy, link = linkCache.get(g); if(!link) return;
+    const row = btn.closest('.li'), label = btn.textContent, msg = messageText(g, contactFor(g), link);
+    copyText(msg, () => { markSent(g, 'copy'); btn.textContent = 'Copied'; setTimeout(() => { btn.textContent = label; }, 1600); }, () => {
+      let inp = row.querySelector('input');
+      if(!inp){ inp = document.createElement('input'); inp.type = 'text'; inp.readOnly = true; inp.id = 'fb-' + g.replace(/\W/g,''); inp.setAttribute('aria-label', g + '\'s link'); row.appendChild(inp); }
+      inp.value = msg.replace(/\n+/g, ' '); inp.focus(); inp.select(); btn.textContent = 'Selected. Copy it'; markSent(g, 'copy');
+    });
+  }
+  $('#copyAll').addEventListener('click', () => {
+    const d = currentDraw(); if(!d) return;
+    const lines = nameList().filter(g => linkCache.has(g)).map(g => {
+      const c = contactFor(g), link = linkCache.get(g);
+      return c ? g + ' (' + c.show + ')\n' + contactHref(g, c, link) : g + ' (no email or phone)\n' + textBody(g, link);
+    });
+    const text = lines.join('\n\n'), btn = $('#copyAll');
+    copyText(text, () => { btn.textContent = 'Copied ' + lines.length + ' links'; setTimeout(() => { btn.textContent = 'Copy all as a list'; }, 1800); }, () => {
+      let ta = $('#allLinks');
+      if(!ta){ ta = document.createElement('textarea'); ta.id = 'allLinks'; ta.readOnly = true; ta.setAttribute('aria-label', 'All email links'); ta.style.fontFamily = 'var(--mono)'; ta.style.fontSize = '12px'; $('#mailHint').appendChild(ta); }
+      ta.value = text; ta.focus(); ta.select(); btn.textContent = 'Selected. Copy it';
+    });
+  });
+
+  /* ---- backup ---- */
+  const BACKUP_HEAD = 'HAIGHT KRIS KINDLE BACKUP v1 (scrambled, open it with the draw page)';
+  function setBackupNote(k, t){ $('#backupNote').innerHTML = t ? '<p class="note ' + k + '">' + esc(t) + '</p>' : ''; }
+  $('#backupBtn').addEventListener('click', () => {
+    const text = BACKUP_HEAD + '\n' + enc(S) + '\n';
+    const d = new Date(), stamp = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+    try{
+      const url = URL.createObjectURL(new Blob([text], {type:'text/plain'}));
+      const a = document.createElement('a'); a.href = url; a.download = 'haight-kris-kindle-backup-' + stamp + '.txt';
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 4000);
+      setBackupNote(selfHosted() ? 'ok' : 'warn', selfHosted()
+        ? 'Backup downloaded' + (S.draw ? ' with the draw in it.' : '. Download it again after you draw so it includes the matches.')
+        : 'Downloads are blocked inside Claude. Use the GitHub Pages copy to save a backup.');
+    }catch(e){ setBackupNote('err', 'Your browser blocked the download. Try again from the GitHub Pages copy.'); }
+  });
+  let pendingRestore = null;
+  function applyRestore(data){
+    S = Object.assign(clone(EXAMPLE), data, {example:false});
+    save(); renderSetup();
+    setBackupNote('ok', 'Restored ' + nameList().length + ' people' + (S.draw ? ' and the draw. Your copy and email buttons are ready again.' : '. There was no draw in this backup yet.'));
+  }
+  $('#restoreFile').addEventListener('change', e => {
+    const file = e.target.files[0]; e.target.value = ''; if(!file) return;
+    const r = new FileReader();
+    r.onload = () => {
+      const lines = String(r.result || '').trim().split(/\r?\n/);
+      const data = lines[0] === BACKUP_HEAD ? dec((lines[1] || '').trim()) : null;
+      if(!data || typeof data.namesText !== 'string'){ setBackupNote('err', 'That file isn\'t a Kris Kindle backup. Pick the file this page downloaded.'); return; }
+      if(S.draw && !S.example){ pendingRestore = data; $('#restoreConfirm').hidden = false; setBackupNote('', ''); }
+      else applyRestore(data);
+    };
+    r.onerror = () => setBackupNote('err', 'That file couldn\'t be read. Try choosing it again.');
+    r.readAsText(file);
+  });
+  $('#restoreYes').addEventListener('click', () => { $('#restoreConfirm').hidden = true; if(pendingRestore) applyRestore(pendingRestore); pendingRestore = null; });
+  $('#restoreNo').addEventListener('click', () => { $('#restoreConfirm').hidden = true; pendingRestore = null; });
+
+  /* ---- in person ---- */
+  const seen = new Set(); let ipCurrent = null;
+  function ipShow(which){ ['#ipList','#ipPass','#ipOut'].forEach(id => $(id).hidden = id !== which); }
+  function ipRender(){
+    const d = currentDraw(); if(!d) return;
+    const order = nameList().filter(nm => d.p.some(p => p[0] === nm));
+    $('#ipNames').innerHTML = order.map(g => '<button class="nbtn' + (seen.has(g) ? ' seen' : '') + '" type="button" data-ip="' + esc(g) + '">' + esc(g) + (seen.has(g) ? '<small>Already looked</small>' : '') + '</button>').join('');
+  }
+  $('#inPerson').addEventListener('click', () => { $('#ip').hidden = false; ipRender(); ipShow('#ipList'); $('#ipClose').focus(); });
+  $('#ipClose').addEventListener('click', () => { $('#ip').hidden = true; $('#inPerson').focus(); });
+  $('#ipNames').addEventListener('click', e => {
+    const b = e.target.closest('[data-ip]'); if(!b) return;
+    ipCurrent = b.dataset.ip; $('#ipWho').textContent = ipCurrent; ipShow('#ipPass'); $('#ipShow').focus();
+  });
+  $('#ipBack').addEventListener('click', () => ipShow('#ipList'));
+  $('#ipShow').addEventListener('click', () => {
+    const d = currentDraw(), pair = d && d.p.find(p => p[0] === ipCurrent); if(!pair) return;
+    $('#ipFor').textContent = ipCurrent + ', you\'re shopping for';
+    const r = $('#ipR'); r.textContent = pair[1]; r.classList.remove('pop'); void r.offsetWidth; r.classList.add('pop');
+    $('#ipFacts').innerHTML = factsHTML(infoFor(pair[1]));
+    ipShow('#ipOut'); $('#ipHide').focus();
+  });
+  $('#ipHide').addEventListener('click', () => { seen.add(ipCurrent); $('#ipR').textContent = ''; $('#ipFacts').innerHTML = ''; ipCurrent = null; ipRender(); ipShow('#ipList'); });
+
+  /* ---- recipient view ---- */
+  async function route(){
+    const h = (location.hash || '').slice(1);
+    if(/^k[pz]-/.test(h)){
+      $('#setup').hidden = true; $('#ip').hidden = true; $('#reveal').hidden = false;
+      $('#rvLoading').hidden = false; $('#rvGood').hidden = true; $('#rvBad').hidden = true; $('#rvBack').hidden = true;
+      const data = await unpackLink(h);
+      const good = !!(data && data.g && data.r);
+      $('#rvLoading').hidden = true; $('#rvGood').hidden = !good; $('#rvBad').hidden = good;
+      $('#rvEvent').textContent = (good && data.e) ? data.e : DEFAULT_EVENT;
+      if(good){
+        $('#rvG').textContent = data.g; $('#rvR').textContent = data.r;
+        $('#rvFacts').innerHTML = factsHTML(data.i);
+        $('#rvCover').hidden = false; $('#rvOut').hidden = true;
+        $('#rvBack').hidden = !data.pv;
+      }
+    } else {
+      $('#reveal').hidden = true; $('#setup').hidden = false;
+    }
+    document.title = DEFAULT_EVENT;
+  }
+  $('#rvBtn').addEventListener('click', () => { $('#rvCover').hidden = true; $('#rvOut').hidden = false; });
+  $('#rvBack').addEventListener('click', () => { location.hash = ''; });
+  window.addEventListener('hashchange', route);
+
+  /* first run: build the example from its own paste so it behaves like real data */
+  if(S.example && !S.form){ applyPaste(S.pasteText); S.example = true; S.namesText = EX_ROWS.map(r => r[1]).join('\n'); save(); }
+  renderSetup();
+  route();
+})();
+</script>
+
+</body>
+</html>
