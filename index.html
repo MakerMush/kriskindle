@@ -85,6 +85,11 @@ fieldset.cols legend{font-size:13px; font-weight:700; color:var(--muted); letter
 }
 .lock{color:var(--gold)}
 .empty{font-size:15px; color:var(--muted)}
+.group{display:grid; gap:10px; padding-top:12px; border-top:1px solid var(--line)}
+.group:first-child{border-top:0; padding-top:0}
+.group-h{display:flex; gap:8px; align-items:center}
+.group-h input{background:var(--surface)}
+.checks{display:grid; grid-template-columns:repeat(auto-fill, minmax(130px, 1fr)); gap:6px 12px}
 .freq{display:flex; flex-wrap:wrap; gap:8px 12px; align-items:center; justify-content:space-between; padding:10px 0; border-top:1px solid var(--line)}
 .freq:first-child{border-top:0; padding-top:0}
 .freq-t{flex:1 1 240px; min-width:0; font-size:15px; display:grid; gap:2px}
@@ -220,6 +225,12 @@ fieldset.cols legend{font-size:13px; font-weight:700; color:var(--muted); letter
     </div>
     <div class="pairs" id="reqs"></div>
     <div class="row"><button class="btn small" id="addReq" type="button">+ Add a request by hand</button></div>
+    <div class="sub">
+      <h3>Groups</h3>
+      <p class="hint">For requests like "one of the cousins" or "someone in the Smith family." Name each group the way people say it, then tick who's in it. Form answers that mention a group's name match it automatically, and the draw gives that person someone from the group at random. People who said no to being requested are left out of group picks.</p>
+      <div id="groups" style="display:grid; gap:12px"></div>
+      <div class="row"><button class="btn small" id="addGroup" type="button">+ Add a group</button></div>
+    </div>
   </section>
 
   <section class="step" aria-labelledby="h4s">
@@ -341,7 +352,7 @@ fieldset.cols legend{font-size:13px; font-weight:700; color:var(--muted); letter
     ['11/9/2026 8:05:30', 'Riley', 'riley@example.com', 'Yes', 'Gran', 'Art supplies, sketchbooks', 'Favorite color teal, sour candy', ''],
     ['11/9/2026 18:31:12', 'Maya', 'maya@example.com', 'Yes', '', 'Running socks, an audiobook credit', 'Size M, citrus scents, oat milk lattes', '220 Elm St, Apt 3B\nRaleigh, NC 27601'],
     ['11/10/2026 7:12:48', 'Theo', '845-555-0177', 'Yes', 'Aunt Joan', 'Anything Star Wars, jigsaw puzzles', 'Shirt size S, peanut butter everything', ''],
-    ['11/10/2026 21:09:05', 'Jess', 'jess@example.com', 'Yes', 'No preference', 'Houseplants, cookbooks', 'Loves yellow, spicy snacks, learning pottery', '']
+    ['11/10/2026 21:09:05', 'Jess', 'jess@example.com', 'Yes', 'Any of the cousins', 'Houseplants, cookbooks', 'Loves yellow, spicy snacks, learning pottery', '']
   ];
   const toTSV = rows => rows.map(r => r.map(c => /[\t\n"]/.test(c) ? '"' + c.replace(/"/g,'""') + '"' : c).join('\t')).join('\n');
   const clone = o => JSON.parse(JSON.stringify(o));
@@ -351,11 +362,12 @@ fieldset.cols legend{font-size:13px; font-weight:700; color:var(--muted); letter
     pasteText: toTSV([EX_HEAD].concat(EX_ROWS)),
     form: null,
     requests:[{g:'Riley', r:'Gran'}], blocks:[{a:'Uncle Pat', b:'Aunt Joan'}],
+    groups:[{id:'gcousins', name:'Cousins', members:['Sam','Riley','Maya','Theo','Jess']}],
     base:'', draw:null, sent:{}, removed:[], example:true
   };
   let S = load();
   function load(){
-    try{ const v = JSON.parse(localStorage.getItem(STORE)); if(v && typeof v.namesText === 'string') return Object.assign(clone(EXAMPLE), v); }catch(e){}
+    try{ const v = JSON.parse(localStorage.getItem(STORE)); if(v && typeof v.namesText === 'string') return Object.assign(clone(EXAMPLE), {groups: v.example ? EXAMPLE.groups : []}, v); }catch(e){}
     return clone(EXAMPLE);
   }
   function save(){ try{ localStorage.setItem(STORE, JSON.stringify(S)); }catch(e){} }
@@ -402,9 +414,40 @@ fieldset.cols legend{font-size:13px; font-weight:700; color:var(--muted); letter
   const first = n => n.split(' ')[0];
   const eventName = () => S.event.trim() || DEFAULT_EVENT;
   const validReqs = () => S.requests.filter(q => q.g && q.r);
+  const isG = r => typeof r === 'string' && r.indexOf('group:') === 0;
+  const groupOf = r => isG(r) ? (S.groups || []).find(x => 'group:' + x.id === r) : null;
+  const groupLabel = grp => grp ? (grp.name.trim() || 'Unnamed group') : 'a deleted group';
+  const reqLabel = r => isG(r) ? 'anyone in ' + groupLabel(groupOf(r)) : r;
+  function declinedSet(){
+    const out = new Set(), f = S.form; if(!f || f.openCol < 0) return out;
+    latestRows().forEach((row, k) => { if(/^n/i.test(clean(row[f.openCol]))) out.add(k); });
+    return out;
+  }
+  function eligibleFor(g, grp){
+    if(!grp) return [];
+    const names = new Set(nameList()), no = declinedSet();
+    const taken = new Set(validReqs().filter(q => !isG(q.r)).map(q => q.r));
+    return grp.members.filter(m => names.has(m) && m !== g && !no.has(m.toLowerCase()) && !taken.has(m));
+  }
+  const STOP = new Set(['the','a','an','of','family','fam','any','anyone','one','someone','somebody','in','from','my','side','or','and','&','our','their','group','please']);
+  const stem = w => { w = w.toLowerCase().replace(/[^a-z0-9]/g, ''); if(/ies$/.test(w)) return w.slice(0,-3) + 'y'; if(/s$/.test(w) && !/ss$/.test(w)) return w.slice(0,-1); return w; };
+  const tokens = t => String(t).split(/[\s,/&+]+/).map(stem).filter(w => w.length > 1 && !STOP.has(w));
+  function matchGroup(text){
+    const have = new Set(String(text).split(/[\s,/&+]+/).map(stem));
+    let best = null, bestLen = 0, tie = false;
+    (S.groups || []).forEach(grp => {
+      const tk = tokens(grp.name); if(!tk.length) return;
+      if(tk.every(w => have.has(w))){
+        if(tk.length > bestLen){ best = grp; bestLen = tk.length; tie = false; }
+        else if(tk.length === bestLen) tie = true;
+      }
+    });
+    return tie ? null : best;
+  }
   const validBlocks = () => S.blocks.filter(x => x.a && x.b && x.a !== x.b);
   function fingerprint(){
-    return JSON.stringify({n: nameList().slice().sort(), r: validReqs().map(q => q.g+'>'+q.r).sort(), b: validBlocks().map(x => [x.a,x.b].sort().join('|')).sort()});
+    const used = validReqs().filter(q => isG(q.r)).map(q => { const grp = groupOf(q.r); return q.r + '=' + (grp ? eligibleFor(q.g, grp).sort().join(',') : ''); }).sort();
+    return JSON.stringify({n: nameList().slice().sort(), r: validReqs().map(q => q.g+'>'+q.r).sort(), b: validBlocks().map(x => [x.a,x.b].sort().join('|')).sort(), g: used});
   }
 
   /* ---- form responses ---- */
@@ -501,8 +544,19 @@ fieldset.cols legend{font-size:13px; font-weight:700; color:var(--muted); letter
     nameList().forEach(g => {
       const row = rows.get(g.toLowerCase()); if(!row) return;
       const text = clean(row[f.prefCol]); if(!text || NOPREF.test(text)) return;
-      const r = matchName(text), item = {g, text, r, st:'', msg:''};
-      if(!r){ item.st = 'nomatch'; item.msg = (S.removed || []).includes(clean(text).toLowerCase()) ? text + ' isn\'t in the draw this year.' : 'Couldn\'t match "' + text + '" to anyone in the draw. Add it by hand below if you know who they meant.'; }
+      let r = matchName(text);
+      const grp = r ? null : matchGroup(text);
+      if(grp) r = 'group:' + grp.id;
+      const item = {g, text, r, st:'', msg:''};
+      if(grp){
+        const el = eligibleFor(g, grp);
+        if(reqs.some(q => q.g === g && q.r === r)) item.st = 'added';
+        else if(reqs.some(q => q.g === g)){ item.st = 'conflict'; item.msg = g + ' already has a different request below.'; }
+        else if(!el.length){ item.st = 'conflict'; item.msg = 'Nobody in ' + groupLabel(grp) + ' is available for ' + g + '. Check the group\'s members.'; }
+        else { item.st = 'ready'; item.msg = 'From their answer "' + text + '". The draw picks one of ' + el.length + ': ' + el.join(', ') + '.'; }
+        out.push(item); return;
+      }
+      if(!r){ item.st = 'nomatch'; item.msg = (S.removed || []).includes(clean(text).toLowerCase()) ? text + ' isn\'t in the draw this year.' : 'Couldn\'t match "' + text + '" to a person or a group. If they meant a group, add one below with that name, or add it by hand.'; }
       else if(r === g){ item.st = 'skip'; item.msg = g + ' put their own name.'; }
       else if(reqs.some(q => q.g === g && q.r === r)){ item.st = 'added'; }
       else {
@@ -516,7 +570,7 @@ fieldset.cols legend{font-size:13px; font-weight:700; color:var(--muted); letter
       out.push(item);
     });
     const counts = {}; out.filter(x => x.st === 'ready').forEach(x => counts[x.r] = (counts[x.r]||0) + 1);
-    out.forEach(x => { if(x.st === 'ready' && counts[x.r] > 1){ x.st = 'contested'; x.msg = 'More than one person asked for ' + x.r + '. Add the one you want to honor.'; } });
+    out.forEach(x => { if(x.st === 'ready' && !isG(x.r) && counts[x.r] > 1){ x.st = 'contested'; x.msg = 'More than one person asked for ' + x.r + '. Add the one you want to honor.'; } });
     return out;
   }
   function renderFormReqs(){
@@ -526,7 +580,7 @@ fieldset.cols legend{font-size:13px; font-weight:700; color:var(--muted); letter
     const list = lastFormReqs = formRequests();
     if(!list.length){ $('#formReqList').innerHTML = '<p class="empty">Nobody has asked for anyone yet.</p>'; $('#addAllReqs').hidden = true; return; }
     $('#formReqList').innerHTML = list.map((x,i) =>
-      '<div class="freq"><div class="freq-t"><span><strong>' + esc(x.g) + '</strong> asked for <strong>' + esc(x.r || ('"' + x.text + '"')) + '</strong></span>' +
+      '<div class="freq"><div class="freq-t"><span><strong>' + esc(x.g) + '</strong> asked for <strong>' + esc(x.r ? reqLabel(x.r) : ('"' + x.text + '"')) + '</strong></span>' +
       (x.msg ? '<span class="freq-m st-' + x.st + '">' + esc(x.msg) + '</span>' : '') + '</div>' +
       (['ready','unknown','contested'].includes(x.st) ? '<button class="btn small" type="button" data-addreq="' + i + '">Add</button>' : (x.st === 'added' ? '<span class="chip ok">Added</span>' : '')) +
       '</div>').join('');
@@ -546,7 +600,12 @@ fieldset.cols legend{font-size:13px; font-weight:700; color:var(--muted); letter
     const reqs = validReqs(), gs = {}, rs = {};
     reqs.forEach(q => {
       if(q.g === q.r) out.push({k:'err', t: q.g + ' is set to draw themselves. Pick someone else.'});
-      gs[q.g] = (gs[q.g]||0) + 1; rs[q.r] = (rs[q.r]||0) + 1;
+      gs[q.g] = (gs[q.g]||0) + 1;
+      if(isG(q.r)){
+        const grp = groupOf(q.r);
+        if(!grp) out.push({k:'err', t: q.g + '\'s request points at a group that was deleted. Pick a new one.'});
+        else if(!eligibleFor(q.g, grp).length) out.push({k:'err', t: 'Nobody in ' + groupLabel(grp) + ' is available for ' + q.g + '. Add members, or check who said no to being requested.'});
+      } else rs[q.r] = (rs[q.r]||0) + 1;
     });
     Object.keys(gs).filter(n => gs[n] > 1).forEach(n => out.push({k:'err', t: n + ' has more than one request. Each person gives one gift.'}));
     Object.keys(rs).filter(n => rs[n] > 1).forEach(n => out.push({k:'err', t: 'More than one person is set to get ' + n + '. Remove all but one of those requests.'}));
@@ -558,18 +617,19 @@ fieldset.cols legend{font-size:13px; font-weight:700; color:var(--muted); letter
 
   /* ---- the draw ---- */
   function solve(){
-    const people = nameList(), reqs = validReqs();
+    const people = nameList(), all = validReqs(), reqs = all.filter(q => !isG(q.r));
+    const allowed = new Map(all.filter(q => isG(q.r)).map(q => [q.g, new Set(eligibleFor(q.g, groupOf(q.r)))]));
     const fixed = reqs.map(q => [q.g, q.r]);
     const fixedG = new Set(reqs.map(q => q.g)), takenR = new Set(reqs.map(q => q.r));
     const givers = people.filter(p => !fixedG.has(p)), pool = people.filter(p => !takenR.has(p));
     const blocked = new Set();
     validBlocks().forEach(x => { blocked.add(x.a+'\u0000'+x.b); blocked.add(x.b+'\u0000'+x.a); });
-    const ok = (g,r) => g !== r && !blocked.has(g+'\u0000'+r);
-    for(let t=0; t<40000; t++){ // uniform pick among valid draws
+    const ok = (g,r) => g !== r && !blocked.has(g+'\u0000'+r) && (!allowed.has(g) || allowed.get(g).has(r));
+    for(let t=0; t<120000; t++){ // uniform pick among valid draws
       const p = shuffle(pool.slice());
       if(givers.every((g,i) => ok(g, p[i]))) return fixed.concat(givers.map((g,i) => [g, p[i]]));
     }
-    const order = shuffle(givers.slice()), res = []; // fallback search for tight setups
+    const order = shuffle(givers.slice()).sort((a,b) => (allowed.has(a) ? allowed.get(a).size : 1e6) - (allowed.has(b) ? allowed.get(b).size : 1e6)), res = []; // fallback search, tightest givers first
     function bt(i, avail){
       if(i === order.length) return true;
       for(const r of shuffle(avail.slice())){
@@ -584,9 +644,13 @@ fieldset.cols legend{font-size:13px; font-weight:700; color:var(--muted); letter
   function optionList(sel, placeholder){
     return '<option value="">' + placeholder + '</option>' + nameList().map(n => '<option' + (n === sel ? ' selected' : '') + ' value="' + esc(n) + '">' + esc(n) + '</option>').join('');
   }
+  function recipOptions(sel){
+    const gs = (S.groups || []).filter(x => x.name.trim());
+    return optionList(isG(sel) ? '' : sel, 'Gets…') + (gs.length ? '<optgroup label="Anyone in a group">' + gs.map(x => '<option value="group:' + esc(x.id) + '"' + ('group:' + x.id === sel ? ' selected' : '') + '>Anyone in ' + esc(x.name.trim()) + '</option>').join('') + '</optgroup>' : '');
+  }
   function pruneSelections(){
     const set = new Set(nameList());
-    S.requests.forEach(q => { if(q.g && !set.has(q.g)) q.g = ''; if(q.r && !set.has(q.r)) q.r = ''; });
+    S.requests.forEach(q => { if(q.g && !set.has(q.g)) q.g = ''; if(q.r && (isG(q.r) ? !groupOf(q.r) : !set.has(q.r))) q.r = ''; });
     S.blocks.forEach(x => { if(x.a && !set.has(x.a)) x.a = ''; if(x.b && !set.has(x.b)) x.b = ''; });
   }
   function renderPairs(){
@@ -594,7 +658,7 @@ fieldset.cols legend{font-size:13px; font-weight:700; color:var(--muted); letter
       '<div class="pair">' +
         '<select class="s1" id="rg' + i + '" data-i="' + i + '" data-f="g" aria-label="Who asked">' + optionList(q.g, 'Who asked…') + '</select>' +
         '<span class="mid">gets</span>' +
-        '<select class="s2" id="rr' + i + '" data-i="' + i + '" data-f="r" aria-label="Gets">' + optionList(q.r, 'Gets…') + '</select>' +
+        '<select class="s2" id="rr' + i + '" data-i="' + i + '" data-f="r" aria-label="Gets">' + recipOptions(q.r) + '</select>' +
         '<button class="rm" type="button" data-rm="req" data-i="' + i + '" aria-label="Remove request">×</button>' +
       '</div>').join('') : '<p class="empty">No locked-in requests yet. Everyone will be drawn at random.</p>';
     $('#blocks').innerHTML = S.blocks.length ? S.blocks.map((x,i) =>
@@ -605,6 +669,15 @@ fieldset.cols legend{font-size:13px; font-weight:700; color:var(--muted); letter
         '<button class="rm" type="button" data-rm="block" data-i="' + i + '" aria-label="Remove pair">×</button>' +
       '</div>').join('') : '<p class="empty">None. Anyone can draw anyone.</p>';
     renderFormReqs();
+  }
+  function renderGroups(){
+    const names = nameList();
+    $('#groups').innerHTML = (S.groups || []).length ? S.groups.map((grp,i) =>
+      '<div class="group">' +
+        '<div class="group-h"><input type="text" id="gname' + i + '" data-gname="' + i + '" value="' + esc(grp.name) + '" placeholder="Group name, like Cousins" aria-label="Group name" autocomplete="off">' +
+        '<button class="rm" type="button" data-rmg="' + i + '" aria-label="Remove group">×</button></div>' +
+        '<div class="checks">' + names.map((n,j) => '<label class="ck"><input type="checkbox" id="g' + i + 'm' + j + '" data-gm="' + i + '" value="' + esc(n) + '"' + (grp.members.includes(n) ? ' checked' : '') + '><span>' + esc(n) + '</span></label>').join('') + '</div>' +
+      '</div>').join('') : '<p class="empty">No groups yet.</p>';
   }
   function renderForm(){
     const f = S.form, box = $('#formCfg');
@@ -637,7 +710,7 @@ fieldset.cols legend{font-size:13px; font-weight:700; color:var(--muted); letter
   }
   function renderSetup(){
     $('#event').value = S.event; $('#sign').value = S.sign; $('#names').value = S.namesText; $('#base').value = S.base; $('#paste').value = S.pasteText || '';
-    renderForm(); renderPairs(); renderNotes(); renderResults();
+    renderForm(); renderGroups(); renderPairs(); renderNotes(); renderResults();
   }
 
   /* ---- rendering: results ---- */
@@ -740,15 +813,15 @@ fieldset.cols legend{font-size:13px; font-weight:700; color:var(--muted); letter
     const now = new Set(rawNames().map(n => n.toLowerCase()));
     S.removed = formNames().map(n => n.toLowerCase()).filter(n => !now.has(n));
     save();
-    clearTimeout(tNames); tNames = setTimeout(() => { pruneSelections(); save(); renderPairs(); renderNotes(); renderResults(); }, 250);
+    clearTimeout(tNames); tNames = setTimeout(() => { pruneSelections(); save(); renderGroups(); renderPairs(); renderNotes(); renderResults(); }, 250);
   });
   function afterPaste(msg){
     pruneSelections(); save();
     $('#names').value = S.namesText;
     $('#pasteNote').innerHTML = msg && msg.t ? '<p class="note ' + msg.k + '">' + esc(msg.t) + '</p>' : '';
-    renderForm(); renderPairs(); renderNotes(); renderResults();
+    renderForm(); renderGroups(); renderPairs(); renderNotes(); renderResults();
   }
-  function takeTable(v){ if(S.example){ S.example = false; S.namesText = ''; S.requests = []; S.blocks = []; S.draw = null; S.sent = {}; S.form = null; S.removed = []; } afterPaste(applyPaste(v)); }
+  function takeTable(v){ if(S.example){ S.example = false; S.namesText = ''; S.requests = []; S.blocks = []; S.groups = []; S.draw = null; S.sent = {}; S.form = null; S.removed = []; } afterPaste(applyPaste(v)); }
   $('#paste').addEventListener('input', e => {
     const v = e.target.value;
     clearTimeout(tPaste); tPaste = setTimeout(() => takeTable(v), 300);
@@ -764,10 +837,31 @@ fieldset.cols legend{font-size:13px; font-weight:700; color:var(--muted); letter
   $('#paste').addEventListener('dragover', e => { e.preventDefault(); });
   $('#paste').addEventListener('drop', e => { if(e.dataTransfer && e.dataTransfer.files.length){ e.preventDefault(); readFile(e.dataTransfer.files[0]); } });
   $('#clearEx').addEventListener('click', () => {
-    S.namesText = ''; S.pasteText = ''; S.form = null; S.requests = []; S.blocks = []; S.example = false; S.draw = null; S.sent = {}; S.removed = [];
+    S.namesText = ''; S.pasteText = ''; S.form = null; S.requests = []; S.blocks = []; S.groups = []; S.example = false; S.draw = null; S.sent = {}; S.removed = [];
     save(); $('#pasteNote').innerHTML = ''; renderSetup(); $('#paste').focus();
   });
   $('#addReq').addEventListener('click', () => { S.requests.push({g:'', r:''}); save(); renderPairs(); renderNotes(); });
+  $('#addGroup').addEventListener('click', () => {
+    S.groups = S.groups || [];
+    S.groups.push({id: 'g' + Date.now().toString(36) + rand(1000), name: '', members: []});
+    save(); renderGroups(); const inp = document.getElementById('gname' + (S.groups.length - 1)); if(inp) inp.focus();
+  });
+  let tGroup;
+  $('#groups').addEventListener('input', e => {
+    const i = e.target.dataset.gname; if(i === undefined) return;
+    S.groups[+i].name = e.target.value; save();
+    clearTimeout(tGroup); tGroup = setTimeout(() => { renderPairs(); renderNotes(); renderResults(); }, 300);
+  });
+  $('#groups').addEventListener('change', e => {
+    const i = e.target.dataset.gm; if(i === undefined) return;
+    const grp = S.groups[+i], n = e.target.value;
+    grp.members = grp.members.filter(m => m !== n); if(e.target.checked) grp.members.push(n);
+    save(); renderPairs(); renderNotes(); renderResults();
+  });
+  $('#groups').addEventListener('click', e => {
+    const b = e.target.closest('[data-rmg]'); if(!b) return;
+    S.groups.splice(+b.dataset.rmg, 1); pruneSelections(); save(); renderGroups(); renderPairs(); renderNotes(); renderResults();
+  });
   $('#addBlock').addEventListener('click', () => { S.blocks.push({a:'', b:''}); save(); renderPairs(); renderNotes(); });
   $('#addAllReqs').addEventListener('click', () => {
     lastFormReqs.filter(x => x.st === 'ready').forEach(x => addRequest(x.g, x.r));
@@ -781,6 +875,7 @@ fieldset.cols legend{font-size:13px; font-weight:700; color:var(--muted); letter
       $('#names').value = S.namesText; renderForm(); renderPairs(); renderNotes(); renderResults(); return;
     }
     if(el.id === 'emailCol' && S.form){ S.form.emailCol = +el.value; save(); renderForm(); renderResults(); return; }
+    if(el.dataset.gm !== undefined) return;
     if(el.dataset.col !== undefined && S.form){ S.form.show[+el.dataset.col] = el.checked; save(); renderResults(); return; }
     if(el.tagName !== 'SELECT' || el.dataset.i === undefined) return;
     const i = +el.dataset.i, f = el.dataset.f;
@@ -866,7 +961,7 @@ fieldset.cols legend{font-size:13px; font-weight:700; color:var(--muted); letter
   });
   let pendingRestore = null;
   function applyRestore(data){
-    S = Object.assign(clone(EXAMPLE), data, {example:false});
+    S = Object.assign(clone(EXAMPLE), {groups: []}, data, {example:false});
     save(); renderSetup();
     setBackupNote('ok', 'Restored ' + nameList().length + ' people' + (S.draw ? ' and the draw. Your copy and email buttons are ready again.' : '. There was no draw in this backup yet.'));
   }
